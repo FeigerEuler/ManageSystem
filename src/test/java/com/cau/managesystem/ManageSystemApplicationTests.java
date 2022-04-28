@@ -8,7 +8,12 @@ class ManageSystemApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println("hello world 123");
+        System.out.println("hello world myq");
+    }
+
+    @Test
+    void MhfTest() {
+        System.out.println("hello world mhf");
     }
 
 }
