@@ -1,7 +1,10 @@
 package com.cau.managesystem;
 
+import com.cau.managesystem.entity.Extener;
 import com.cau.managesystem.entity.User;
-import com.cau.managesystem.service.dto.UserDto;
+
+import com.cau.managesystem.database.service.dto.ExtenerDto;
+import com.cau.managesystem.database.service.dto.UserDto;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,8 @@ class ManageSystemApplicationTests {
 
     @Autowired
     private UserDto userDto;
+    @Autowired
+    private ExtenerDto extenerDto;
 
     @Test
     void contextLoads() {
@@ -32,4 +37,16 @@ class ManageSystemApplicationTests {
 
     }
 
+    @Test
+    void MhfTest2() {
+        Extener extener = new Extener();
+        extener.setId(1);
+        extener.setHaveCarArrived(1);
+        extener.setFirstContactTime("2022-05-21");
+
+
+        System.out.println("已插入："+extenerDto.insert(extener));
+
+
+    }
 }
