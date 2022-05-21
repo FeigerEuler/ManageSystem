@@ -1,4 +1,4 @@
-package com.cau.managesystem.service.mapper;
+package com.cau.managesystem.database.service.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cau.managesystem.entity.User;

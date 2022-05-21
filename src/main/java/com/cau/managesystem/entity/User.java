@@ -18,6 +18,8 @@ public class User {
 
     private String role;
 
+    private String realName;
+
     private String department;
 
     private Date createTime;
