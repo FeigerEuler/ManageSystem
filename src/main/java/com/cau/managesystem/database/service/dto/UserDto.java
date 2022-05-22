@@ -1,12 +1,11 @@
-package com.cau.managesystem.service.dto;
+package com.cau.managesystem.database.service.dto;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cau.managesystem.database.service.mapper.UserMapper;
 import com.cau.managesystem.entity.User;
-import com.cau.managesystem.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @Repository
