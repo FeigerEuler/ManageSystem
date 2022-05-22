@@ -10,7 +10,7 @@ import java.sql.Date;
 @Data
 public class Extener {
 
-    private int id;
+    private String id;
 
     /**
      * 首次联系时间
@@ -40,7 +40,7 @@ public class Extener {
     /**
      * 创建时间，即提交到数据库的时间。
      */
-    private Date createTime;
+    private String createTime;
 
     /**
      * 创建人，即提交到数据库的员工

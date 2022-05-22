@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -51,8 +52,11 @@ public class UserController {
 
     }
 
-    @GetMapping("/test")
-    public String helloWeb1() {
-        return "helloworld";
+    @PostMapping("/queryBydepartment")
+    @ResponseBody
+    public List<User> helloWeb2(@RequestBody String body) {
+        System.out.println("收到按部门查询请求:" + body);
+        List<User> users = userDto.selectAll();
+        return users;
     }
 }

@@ -10,7 +10,7 @@ import java.sql.Date;
 @Data
 public class User {
 
-    private int id;
+    private String id;
 
     private String userName;
 
