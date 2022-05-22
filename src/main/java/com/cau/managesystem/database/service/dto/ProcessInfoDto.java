@@ -23,10 +23,21 @@ public class ProcessInfoDto {
 
     public ProcessInfo selectProcessInfoByProcessInfoName(String processInfoName) {
         QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("ProcessInfo_name", processInfoName);
+        wrapper.eq("processInfo_name", processInfoName);
         List<ProcessInfo> ProcessInfoInfos = processInfoMapper.selectList(wrapper);
         if (ProcessInfoInfos != null && ProcessInfoInfos.size() > 0)
             return ProcessInfoInfos.get(0);
+        return null;
+
+    }
+
+    public List<ProcessInfo> selectProcessInfoByNowProcessorId(String nowProcessorId) {
+        System.out.println("nowProcessorId="+nowProcessorId);
+        QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("now_processor_id", nowProcessorId);
+        List<ProcessInfo> processInfoInfos = processInfoMapper.selectList(wrapper);
+        if (processInfoInfos != null && processInfoInfos.size() > 0)
+            return processInfoInfos;
         return null;
 
     }

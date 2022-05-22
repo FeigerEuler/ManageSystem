@@ -10,7 +10,7 @@ import java.sql.Date;
 @Data
 public class ProcessInfo {
 
-    private int id;
+    private String id;
 
     /**
      * 车牌号
@@ -25,43 +25,43 @@ public class ProcessInfo {
     /**
      * 事故收集岗处理人id
      */
-    private int clue_collectioner_id;
+    private String clueCollectionerId;
 
     /**
      * 外协岗处理人id
      */
-    private int extener_id;
+    private String extenerId;
 
     /**
      * 服务顾问岗处理人id
      */
-    private int service_consultant_id;
+    private String serviceConsultantId;
 
     /**
      * 车间技师岗处理人id
      */
-    private int technician_id;
+    private String technicianId;
 
     /**
      * 配件岗处理人id
      */
-    private int componenter_id;
+    private String componenterId;
 
 
     /**
      * 财务岗处理人id
      */
-    private int treasurer_id;
+    private String treasurerId;
 
     /**
      * 管理岗处理人id
      */
-    private int manager_id;
+    private String managerId;
 
     /**
      * 当前处理人id
      */
-    private int now_processer_id;
+    private String nowProcessorId;
     /**
      * 流程处理状态
      */
@@ -72,5 +72,6 @@ public class ProcessInfo {
      */
     private  String remark;
 
+    private String createTime;
 
 }
