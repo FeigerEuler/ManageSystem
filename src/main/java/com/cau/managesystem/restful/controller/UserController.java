@@ -56,7 +56,8 @@ public class UserController {
     @ResponseBody
     public List<User> helloWeb2(@RequestBody String body) {
         System.out.println("收到按部门查询请求:" + body);
-        List<User> users = userDto.selectAll();
+        JSONObject params = JSON.parseObject(body);
+        List<User> users = userDto.selectUserByDepartment(params.getString("department"));
         return users;
     }
 }

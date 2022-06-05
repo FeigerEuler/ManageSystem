@@ -41,7 +41,21 @@ public class ProcessInfoDto {
         return null;
 
     }
+    public ProcessInfo selectProcessInfoById(String id) {
+        System.out.println("tProcessorId="+id);
+        QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id);
+        List<ProcessInfo> processInfoInfos = processInfoMapper.selectList(wrapper);
+        if (processInfoInfos != null && processInfoInfos.size() > 0)
+            return processInfoInfos.get(0);
+        return null;
+    }
+    public int updateProcessInfoById(ProcessInfo processInfo) {
+        System.out.println("tProcessorId="+processInfo.toString());
+        int i = processInfoMapper.updateById(processInfo);
+        return i;
 
+    }
     public int insert(ProcessInfo processInfo) {
         int insert = processInfoMapper.insert(processInfo);
         return insert;
