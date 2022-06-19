@@ -35,6 +35,18 @@ public class ProcessInfoDto {
         System.out.println("nowProcessorId="+nowProcessorId);
         QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
         wrapper.eq("now_processor_id", nowProcessorId);
+        wrapper.eq("status", "doing");
+        List<ProcessInfo> processInfoInfos = processInfoMapper.selectList(wrapper);
+        if (processInfoInfos != null && processInfoInfos.size() > 0)
+            return processInfoInfos;
+        return null;
+
+    }
+
+    public List<ProcessInfo> selectProcessInfoByStatus(String status) {
+      //  System.out.println("nowProcessorId="+nowProcessorId);
+        QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("status", status);
         List<ProcessInfo> processInfoInfos = processInfoMapper.selectList(wrapper);
         if (processInfoInfos != null && processInfoInfos.size() > 0)
             return processInfoInfos;

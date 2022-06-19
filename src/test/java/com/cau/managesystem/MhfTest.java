@@ -1,30 +1,30 @@
 package com.cau.managesystem;
 
 
-import com.cau.managesystem.common.HttpUtils;
-import com.cau.managesystem.smsService.AliyunSmsService;
-import com.cau.managesystem.smsService.BaiduSmsService;
-import com.cau.managesystem.smsService.SmsBao;
-import com.cau.managesystem.smsService.SmsNotify;
-import org.apache.http.HttpResponse;
+import org.apache.http.impl.cookie.DateParseException;
+import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MhfTest {
 
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Test
-    void MhfTest() {
-        int random= (int) (Math.random()*1000);
-        String num = formatter.format(new Date());
+    void MhfTest() throws DateParseException {
+
+        String num = formatter.format(1655630124048L);
         System.out.println(num);
-        System.out.println(num+random);
+        Date date = DateUtils.parseDate(num);
+        System.out.println(date);
+
+
 
     }
 

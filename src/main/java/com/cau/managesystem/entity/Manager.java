@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 
-@TableName("t_treasurer")
+@TableName("t_manager")
 @Data
 public class Manager {
 
@@ -12,8 +12,8 @@ public class Manager {
     private String carOwnerName;
 
     private String carOwnerPhone;
-    private String deliverTime;
 
+private String marketingFee;
     private String createTime;
 
 }

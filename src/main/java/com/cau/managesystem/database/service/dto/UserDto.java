@@ -30,6 +30,15 @@ public class UserDto {
         return null;
 
     }
+
+    public User selectUserByUserId(String userId) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("id",userId);
+        List<User> userInfos = userMapper.selectList(wrapper);
+        if(userInfos != null&&userInfos.size()>0)
+            return userInfos.get(0);
+        return null;
+    }
     public List<User> selectUserByDepartment(String department) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("department",department);

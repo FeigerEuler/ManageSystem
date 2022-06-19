@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @RestController()
@@ -74,7 +75,7 @@ public class ApiController {
     @PostMapping("/addClueInfo")
     @ResponseBody
     public TaskAssignResponse helloWeb2(@RequestBody String body) {
-        System.out.println("收到外协岗位处理请求:" + body);
+        System.out.println("收到新增线索信息请求:" + body);
         TaskAssignResponse rep = new TaskAssignResponse();
         //JSONObject jsonObject = JSON.parseObject(body);
         ClueCollection clueCollection = JSONObject.parseObject(body, ClueCollection.class);
@@ -102,6 +103,7 @@ public class ApiController {
         ProcessInfo processInfo = JSONObject.parseObject(body, ProcessInfo.class);
         processInfo.setCreateTime(formatter.format(new Date()));
         processInfo.setId(id);
+        processInfo.setStatus("doing");
         AddProcessInfoResponse rep = new AddProcessInfoResponse();
         User user = userDto.selectUserById(processInfo.getNowProcessorId());
 
@@ -213,21 +215,28 @@ public class ApiController {
     @PostMapping("/addManagerInfo")
     @ResponseBody
     public AddProcessInfoResponse addManagerInfo(@RequestBody String body) {
-        System.out.println("收到车间技师岗处理流程请求:" + body);
+        System.out.println("收到管理员处理流程请求:" + body);
         SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmss");
         String id = format2.format(new Date());
+
+        Manager query = managerDto.selectManagerById(id);
+        AddProcessInfoResponse rep = new AddProcessInfoResponse();
+        int insert = 0;
         JSONObject jsonObject = JSON.parseObject(body);
         Manager manager = JSONObject.parseObject(body, Manager.class);
         manager.setCreateTime(formatter.format(new Date()));
         manager.setId(id);
-        AddProcessInfoResponse rep = new AddProcessInfoResponse();
+        if(null == query){
+            insert = managerDto.insert(manager);
+        }else {
+            insert = managerDto.updateById(manager);
+        }
 
-        int insert = managerDto.insert(manager);
         if (1 == insert) {
             // rep.setProcessInfo(consultant);
             rep.buildSuccess();
         } else {
-            rep.buildFail("数据插入失败");
+            rep.buildFail("办理失败请稍后再试");
         }
         return rep;
     }
@@ -260,6 +269,31 @@ public class ApiController {
         return rep;
     }
 
+    @PostMapping("/getDoingList")
+    @ResponseBody
+    public QueryProcessInfoResponse getAllDoingList(@RequestBody String body) {
+        System.out.println("收到查询办理中流程列表请求:" + body);
+        QueryProcessInfoResponse rep = new QueryProcessInfoResponse();
+        JSONObject jsonObject = JSON.parseObject(body);
+        String userId = jsonObject.getString("nowProcessorId");
+        User user = userDto.selectUserByUserName(userId);
+
+//        if(!Objects.equals(user.getDepartment(), "7")){
+//            rep.buildFail("您无权查询查看进行中流程");
+//        }
+        List<ProcessInfo> processInfos = processInfoDto.selectProcessInfoByStatus("doing");
+        System.out.println(JSON.toJSONString(processInfos));
+
+
+        if (null != processInfos) {
+
+            rep.setProcessInfos(processInfos);
+            rep.buildSuccess();
+        } else {
+            rep.buildFail("您暂无待办");
+        }
+        return rep;
+    }
 
 
     @PostMapping("/getToDoList")
@@ -270,9 +304,12 @@ public class ApiController {
         JSONObject jsonObject = JSON.parseObject(body);
         String userid = jsonObject.getString("nowProcessorId");
         List<ProcessInfo> processInfos = processInfoDto.selectProcessInfoByNowProcessorId(userid);
+        System.out.println(JSON.toJSONString(processInfos));
+
 
         QueryProcessInfoResponse rep = new QueryProcessInfoResponse();
         if (null != processInfos) {
+
             rep.setProcessInfos(processInfos);
             rep.buildSuccess();
         } else {

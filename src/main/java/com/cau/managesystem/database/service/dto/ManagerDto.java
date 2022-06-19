@@ -35,4 +35,8 @@ public class ManagerDto {
         int insert = managerMapper.insert(manager);
         return insert;
     }
+    public int updateById(Manager manager){
+        int ret = managerMapper.updateById(manager);
+        return ret;
+    }
 }
