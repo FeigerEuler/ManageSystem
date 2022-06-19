@@ -9,7 +9,9 @@ import lombok.Data;
 public class Technician {
 
     private String id;
+    private String carOwnerName;
 
+    private String carOwnerPhone;
     private String accomplishmentTime;
 
     private String createTime;

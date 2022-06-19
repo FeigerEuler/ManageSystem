@@ -9,7 +9,9 @@ import lombok.Data;
 public class Manager {
 
     private String id;
+    private String carOwnerName;
 
+    private String carOwnerPhone;
     private String deliverTime;
 
     private String createTime;

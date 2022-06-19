@@ -9,7 +9,9 @@ import lombok.Data;
 public class Componenter {
 
     private String id;
+    private String carOwnerName;
 
+    private String carOwnerPhone;
     private String componentCost;
 
     private String createTime;
