@@ -1,16 +1,21 @@
 package com.cau.managesystem;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.cau.managesystem.common.GaodeUtils;
+import com.cau.managesystem.entity.District;
+import com.cau.managesystem.entity.GaodeRes;
+import com.google.gson.JsonObject;
 import org.apache.http.impl.cookie.DateParseException;
 import org.apache.http.impl.cookie.DateUtils;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MhfTest {
 
@@ -29,17 +34,7 @@ public class MhfTest {
     }
 
     @Test
-    void MhfTest2() {
-
-//        String content = "【马哈哈工作室】 通知短信测试";
-//        BaiduSmsService.sendSmsNotify("18811211838",content);
-      //  AliyunSmsService.addSignature("尊敬的#username#您好！#name#已将流程单号#id#指派给您，请及时处理。","马哈哈Studio");
-     //   AliyunSmsService.queryStatus("3889");
-
-       // AliyunSmsService.addSignature("尊敬的#username#您好！您的马哈哈代理服务将由#oldService#在#time#后调整为#newService#,请您及时调整配置文件#config#。详情请咨询马哈哈工作室内",
-             //   "马哈哈工作室");
-
-        //AliyunSmsService.query();
+    void MhfTest2() throws IOException {
 
 
     }

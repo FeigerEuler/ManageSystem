@@ -3,9 +3,11 @@ package com.cau.managesystem.restful.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.cau.managesystem.common.GaodeUtils;
 import com.cau.managesystem.database.service.dto.*;
 import com.cau.managesystem.entity.*;
 import com.cau.managesystem.responses.AddProcessInfoResponse;
+import com.cau.managesystem.responses.QueryDistrictsResponse;
 import com.cau.managesystem.responses.QueryProcessInfoResponse;
 import com.cau.managesystem.responses.TaskAssignResponse;
 import com.cau.managesystem.smsService.SmsNotify;
@@ -275,7 +277,7 @@ public class ApiController {
         System.out.println("收到查询办理中流程列表请求:" + body);
         QueryProcessInfoResponse rep = new QueryProcessInfoResponse();
         JSONObject jsonObject = JSON.parseObject(body);
-        String userId = jsonObject.getString("nowProcessorId");
+        String userId = jsonObject.getString("z");
         User user = userDto.selectUserByUserName(userId);
 
 //        if(!Objects.equals(user.getDepartment(), "7")){
@@ -317,6 +319,27 @@ public class ApiController {
         }
         return rep;
     }
+
+
+    @PostMapping("/getDistrictsNames")
+    @ResponseBody
+    public QueryDistrictsResponse  getgetDistrictsNames(@RequestBody String body) {
+        System.out.println("收到查询行政区请求:" + body);
+
+        QueryDistrictsResponse rep = new QueryDistrictsResponse();
+        JSONObject jsonObject = JSON.parseObject(body);
+        String keyWord = jsonObject.getString("keyWord");
+        List<District> strings = GaodeUtils.queryDistricts(keyWord);
+
+        if (strings.size() < 2) {
+            rep.buildFail("获取行政区异常，请稍后再试");
+        }
+        rep.setDistrictNames(strings);
+        rep.buildSuccess();
+
+        return rep;
+    }
+
 
     @GetMapping("/test")
     public String helloWeb1() {
