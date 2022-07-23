@@ -126,8 +126,21 @@ public class FileController {
     }
 
     private String  createClueCollectionXLS(String startDate,String endDate) {
-        String path = "/root";
+
+        List<List<String>> heads =  buildheads();
+        List<List<Object>> data = buildData(startDate,endDate);
+
+
+        return "./test.xls";
+    }
+
+    private List<List<Object>> buildData(String startDate, String endDate) {
+        String path = "./test.xls";
         List<ClueCollection> clueCollections = clueCollectionDto.selectRecordsByDate(startDate, endDate);
+
+    }
+
+    private List<List<String>> buildheads() {
         List<List<String>> list = new ArrayList<>();
         List<String> head0 = new ArrayList<>();
         head0.add("单号");
@@ -213,9 +226,7 @@ public class FileController {
         list.add(head25);
         list.add(head26);
 
-
-
-        return path;
+return list;
     }
 
     @GetMapping("/test")
