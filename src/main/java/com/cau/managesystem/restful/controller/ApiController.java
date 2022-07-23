@@ -3,25 +3,27 @@ package com.cau.managesystem.restful.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cau.managesystem.database.service.dto.ClueCollectionDto;
-import com.cau.managesystem.database.service.dto.ExtenerDto;
-import com.cau.managesystem.database.service.dto.ProcessInfoDto;
-import com.cau.managesystem.database.service.dto.UserDto;
-import com.cau.managesystem.entity.ClueCollection;
-import com.cau.managesystem.entity.Extener;
-import com.cau.managesystem.entity.ProcessInfo;
-import com.cau.managesystem.entity.User;
+import com.cau.managesystem.common.GaodeUtils;
+import com.cau.managesystem.database.service.dto.*;
+import com.cau.managesystem.entity.*;
 import com.cau.managesystem.responses.AddProcessInfoResponse;
-import com.cau.managesystem.responses.LoginResponse;
+import com.cau.managesystem.responses.QueryDistrictsResponse;
 import com.cau.managesystem.responses.QueryProcessInfoResponse;
 import com.cau.managesystem.responses.TaskAssignResponse;
+import com.cau.managesystem.smsService.SmsNotify;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @RestController()
@@ -35,7 +37,25 @@ public class ApiController {
 
     @Autowired
     private ProcessInfoDto processInfoDto;
+    @Autowired
+    private ConsultantDto consultantDto;
 
+    @Autowired
+    private TechnicianDto technicianDto;
+    @Autowired
+    private ComponentDto componentDto;
+    @Autowired
+    private TreasurerDto treasurerDto;
+    @Autowired
+    private ManagerDto managerDto;
+
+
+
+    @Autowired
+    private UserDto userDto;
+
+    @Autowired
+    private SmsNotify smsNotify;
 
     //时间格式化对象
     private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -62,7 +82,7 @@ public class ApiController {
     @PostMapping("/addClueInfo")
     @ResponseBody
     public TaskAssignResponse helloWeb2(@RequestBody String body) {
-        System.out.println("收到外协岗位处理请求:" + body);
+        System.out.println("收到新增线索信息请求:" + body);
         TaskAssignResponse rep = new TaskAssignResponse();
         //JSONObject jsonObject = JSON.parseObject(body);
         ClueCollection clueCollection = JSONObject.parseObject(body, ClueCollection.class);
@@ -90,7 +110,16 @@ public class ApiController {
         ProcessInfo processInfo = JSONObject.parseObject(body, ProcessInfo.class);
         processInfo.setCreateTime(formatter.format(new Date()));
         processInfo.setId(id);
+        processInfo.setStatus("doing");
         AddProcessInfoResponse rep = new AddProcessInfoResponse();
+        User user = userDto.selectUserById(processInfo.getNowProcessorId());
+
+        try {
+            smsNotify.sendNotifySms(user.getPhoneNo());
+        } catch (Exception e) {
+            System.out.println("短信发送失败");
+        }
+
         int insert = processInfoDto.insert(processInfo);
         if (1 == insert) {
             rep.setProcessInfo(processInfo);
@@ -102,17 +131,169 @@ public class ApiController {
     }
 
 
-    @PostMapping("/getToDoList")
+    @PostMapping("/addConsultantInfo")
     @ResponseBody
-    public QueryProcessInfoResponse getToDoList(@RequestBody String body) {
-        System.out.println("收到查询待办列表请求:" + body);
-
+    public AddProcessInfoResponse addConsultantInfo(@RequestBody String body) {
+        System.out.println("收到顾问岗处理流程请求:" + body);
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmss");
+        String id = format2.format(new Date());
         JSONObject jsonObject = JSON.parseObject(body);
-        String userid = jsonObject.getString("nowProcessorId");
-        List<ProcessInfo> processInfos = processInfoDto.selectProcessInfoByNowProcessorId(userid);
+        Consultant consultant = JSONObject.parseObject(body, Consultant.class);
+        consultant.setCreateTime(formatter.format(new Date()));
+        consultant.setId(id);
+        AddProcessInfoResponse rep = new AddProcessInfoResponse();
 
+
+        int insert = consultantDto.insert(consultant);
+        if (1 == insert) {
+           // rep.setProcessInfo(consultant);
+            rep.buildSuccess();
+        } else {
+            rep.buildFail("数据插入失败");
+        }
+        return rep;
+    }
+
+
+    @PostMapping("/addTechnicianInfo")
+    @ResponseBody
+    public AddProcessInfoResponse addTechnicianInfo(@RequestBody String body) {
+        System.out.println("收到车间技师岗处理流程请求:" + body);
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmss");
+        String id = format2.format(new Date());
+        JSONObject jsonObject = JSON.parseObject(body);
+        Technician technician = JSONObject.parseObject(body, Technician.class);
+        technician.setCreateTime(formatter.format(new Date()));
+       technician.setId(id);
+        AddProcessInfoResponse rep = new AddProcessInfoResponse();
+
+        int insert = technicianDto.insert(technician);
+        if (1 == insert) {
+            // rep.setProcessInfo(consultant);
+            rep.buildSuccess();
+        } else {
+            rep.buildFail("数据插入失败");
+        }
+        return rep;
+    }
+
+    @PostMapping("/addComponentInfo")
+    @ResponseBody
+    public AddProcessInfoResponse addComponentInfo(@RequestBody String body) {
+        System.out.println("收到车间技师岗处理流程请求:" + body);
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmss");
+        String id = format2.format(new Date());
+        JSONObject jsonObject = JSON.parseObject(body);
+        Componenter component = JSONObject.parseObject(body, Componenter.class);
+        component.setCreateTime(formatter.format(new Date()));
+        component.setId(id);
+        AddProcessInfoResponse rep = new AddProcessInfoResponse();
+
+        int insert = componentDto.insert(component);
+        if (1 == insert) {
+            // rep.setProcessInfo(consultant);
+            rep.buildSuccess();
+        } else {
+            rep.buildFail("数据插入失败");
+        }
+        return rep;
+    }
+    @PostMapping("/addTreasurerInfo")
+    @ResponseBody
+    public AddProcessInfoResponse addTreasurerInfo(@RequestBody String body) {
+        System.out.println("收到配件岗处理流程请求:" + body);
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmss");
+        String id = format2.format(new Date());
+        JSONObject jsonObject = JSON.parseObject(body);
+        Treasurer treasurer = JSONObject.parseObject(body, Treasurer.class);
+        treasurer.setCreateTime(formatter.format(new Date()));
+        treasurer.setId(id);
+        AddProcessInfoResponse rep = new AddProcessInfoResponse();
+
+        int insert = treasurerDto.insert(treasurer);
+        if (1 == insert) {
+            // rep.setProcessInfo(consultant);
+            rep.buildSuccess();
+        } else {
+            rep.buildFail("数据插入失败");
+        }
+        return rep;
+    }
+    @PostMapping("/addManagerInfo")
+    @ResponseBody
+    public AddProcessInfoResponse addManagerInfo(@RequestBody String body) {
+        System.out.println("收到管理员处理流程请求:" + body);
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmss");
+        String id = format2.format(new Date());
+
+        Manager query = managerDto.selectManagerById(id);
+        AddProcessInfoResponse rep = new AddProcessInfoResponse();
+        int insert = 0;
+        JSONObject jsonObject = JSON.parseObject(body);
+        Manager manager = JSONObject.parseObject(body, Manager.class);
+        manager.setCreateTime(formatter.format(new Date()));
+        manager.setId(id);
+        if(null == query){
+            insert = managerDto.insert(manager);
+        }else {
+            insert = managerDto.updateById(manager);
+        }
+
+        if (1 == insert) {
+            // rep.setProcessInfo(consultant);
+            rep.buildSuccess();
+        } else {
+            rep.buildFail("办理失败请稍后再试");
+        }
+        return rep;
+    }
+
+    @PostMapping("/updateProcessInfo")
+    @ResponseBody
+    public AddProcessInfoResponse updateProcessInfo(@RequestBody String body) {
+        System.out.println("收到更新处理流程请求:" + body);
+        //SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMddHHmmss");
+       // String id = format2.format(new Date());
+        JSONObject jsonObject = JSON.parseObject(body);
+        ProcessInfo processInfo = JSONObject.parseObject(body, ProcessInfo.class);
+        processInfo.setCreateTime(formatter.format(new Date()));
+        AddProcessInfoResponse rep = new AddProcessInfoResponse();
+        User user = userDto.selectUserById(processInfo.getNowProcessorId());
+
+//        try {
+//            smsNotify.sendNotifySms(user.getPhoneNo());
+//        } catch (Exception e) {
+//            System.out.println("短信发送失败");
+//        }
+        int i = processInfoDto.updateProcessInfoById(processInfo);
+        if (1==i){
+            rep.buildSuccess();
+        }else{
+            rep.buildFail("请稍后再试");
+        }
+
+
+        return rep;
+    }
+
+    @PostMapping("/getDoingList")
+    @ResponseBody
+    public QueryProcessInfoResponse getAllDoingList(@RequestBody String body) {
+        System.out.println("收到查询办理中流程列表请求:" + body);
         QueryProcessInfoResponse rep = new QueryProcessInfoResponse();
+        JSONObject jsonObject = JSON.parseObject(body);
+        String userId = jsonObject.getString("z");
+        User user = userDto.selectUserByUserName(userId);
+
+//        if(!Objects.equals(user.getDepartment(), "7")){
+//            rep.buildFail("您无权查询查看进行中流程");
+//        }
+        List<ProcessInfo> processInfos = processInfoDto.selectProcessInfoByStatus("doing");
+        System.out.println(JSON.toJSONString(processInfos));
+
+
         if (null != processInfos) {
+
             rep.setProcessInfos(processInfos);
             rep.buildSuccess();
         } else {
@@ -121,6 +302,111 @@ public class ApiController {
         return rep;
     }
 
+
+
+    @PostMapping("/getToDoList")
+    @ResponseBody
+    public QueryProcessInfoResponse getToDoList(@RequestBody String body) {
+        System.out.println("收到查询待办列表请求:" + body);
+
+        JSONObject jsonObject = JSON.parseObject(body);
+        String userid = jsonObject.getString("nowProcessorId");
+        List<ProcessInfo> processInfos = processInfoDto.selectProcessInfoByNowProcessorId(userid);
+        System.out.println(JSON.toJSONString(processInfos));
+
+
+        QueryProcessInfoResponse rep = new QueryProcessInfoResponse();
+        if (null != processInfos) {
+
+            rep.setProcessInfos(processInfos);
+            rep.buildSuccess();
+        } else {
+            rep.buildFail("您暂无待办");
+        }
+        return rep;
+    }
+
+
+    @PostMapping("/getDistrictsNames")
+    @ResponseBody
+    public QueryDistrictsResponse  getgetDistrictsNames(@RequestBody String body) {
+        System.out.println("收到查询行政区请求:" + body);
+
+        QueryDistrictsResponse rep = new QueryDistrictsResponse();
+        JSONObject jsonObject = JSON.parseObject(body);
+        String keyWord = jsonObject.getString("keyWord");
+        List<District> strings = GaodeUtils.queryDistricts(keyWord);
+
+        if (strings.size() < 2) {
+            rep.buildFail("获取行政区异常，请稍后再试");
+        }
+        rep.setDistrictNames(strings);
+        rep.buildSuccess();
+
+        return rep;
+    }
+
+    /**
+     * 文件下载
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/download")
+    public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
+        //String fileName = request.getParameter("filename");
+        //System.out.println(fileName);
+       // if (StringUtils.hasText(fileName)) {
+            //设置文件路径
+            File file = new File("/Users/admin-mhf/IdeaProjects/ManageSystem/mhf.txt");
+            if (file.exists()) {
+                response.setContentType("application/force-download");// 设置强制下载不打开
+                response.addHeader("Content-Disposition", "attachment;fileName=" + "fileName.txt");// 设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    bis = new BufferedInputStream(fis);
+                    OutputStream os = response.getOutputStream();
+                   // int i = bis.read(buffer);
+
+                   // while (i != -1) {
+                        buffer = "01234567890123456789".getBytes(StandardCharsets.UTF_8);
+                        System.out.println(buffer.length);
+                    System.out.println(">>>>>>>>>>>>");
+                        for(int j=0;j<buffer.length;j++){
+                            System.out.println(buffer[j]);
+                            os.write(buffer[j]);
+                        }
+
+                    //    i = bis.read(buffer);
+                   //}
+                    return "下载成功";
+                } catch (Exception e) {
+
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                } finally { // 做关闭操作
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            //    }
+            }
+        }
+        return "下载失败";
+    }
     @GetMapping("/test")
     public String helloWeb1() {
         return "helloworld";

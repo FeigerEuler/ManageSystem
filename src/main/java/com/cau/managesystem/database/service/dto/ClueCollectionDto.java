@@ -19,7 +19,13 @@ public class ClueCollectionDto {
         List<ClueCollection> ClueCollections = clueCollectionMapper.selectList(null);
         return ClueCollections;
     }
-
+    public List<ClueCollection> selectRecordsByDate(String start,String end) {
+        QueryWrapper<ClueCollection> wrapper = new QueryWrapper<>();
+        wrapper.ge("id",start);
+        wrapper.le("id", end);
+        List<ClueCollection> ClueCollections = clueCollectionMapper.selectList(null);
+        return ClueCollections;
+    }
 
     public ClueCollection selectClueCollectionByClueCollectionName(String ClueCollectionName) {
         QueryWrapper<ClueCollection> wrapper = new QueryWrapper<>();

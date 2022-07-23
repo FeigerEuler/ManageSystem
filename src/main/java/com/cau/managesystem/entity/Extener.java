@@ -12,6 +12,9 @@ public class Extener {
 
     private String id;
 
+    private String carOwnerName;
+
+    private String carOwnerPhone;
     /**
      * 首次联系时间
      */

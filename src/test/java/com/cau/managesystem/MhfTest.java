@@ -1,22 +1,42 @@
 package com.cau.managesystem;
 
-import com.cau.managesystem.entity.User;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.cau.managesystem.common.GaodeUtils;
+import com.cau.managesystem.entity.District;
+import com.cau.managesystem.entity.GaodeRes;
+import com.google.gson.JsonObject;
+import org.apache.http.impl.cookie.DateParseException;
+import org.apache.http.impl.cookie.DateUtils;
+import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import java.util.*;
 
 public class MhfTest {
 
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Test
-    void MhfTest() {
-        int random= (int) (Math.random()*1000);
-        String num = formatter.format(new Date());
-        System.out.println(num);
-        System.out.println(num+random);
+    void MhfTest() throws DateParseException {
 
+        String num = formatter.format(1655630124048L);
+        System.out.println(num);
+        Date date = DateUtils.parseDate(num);
+        System.out.println(date);
+
+
+
+    }
+
+    @Test
+    void MhfTest2() throws IOException {
+
+        List<District> strings = GaodeUtils.queryDistricts("海淀区");
+        System.out.println(strings);
     }
 }

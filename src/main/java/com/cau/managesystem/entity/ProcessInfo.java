@@ -12,6 +12,11 @@ public class ProcessInfo {
 
     private String id;
 
+    private String carOwnerName;
+
+    private String carOwnerPhone;
+
+
     /**
      * 车牌号
      */

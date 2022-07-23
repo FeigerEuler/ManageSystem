@@ -35,6 +35,7 @@ public class ProcessInfoDto {
         System.out.println("nowProcessorId="+nowProcessorId);
         QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
         wrapper.eq("now_processor_id", nowProcessorId);
+        wrapper.eq("status", "doing");
         List<ProcessInfo> processInfoInfos = processInfoMapper.selectList(wrapper);
         if (processInfoInfos != null && processInfoInfos.size() > 0)
             return processInfoInfos;
@@ -42,6 +43,31 @@ public class ProcessInfoDto {
 
     }
 
+    public List<ProcessInfo> selectProcessInfoByStatus(String status) {
+      //  System.out.println("nowProcessorId="+nowProcessorId);
+        QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("status", status);
+        List<ProcessInfo> processInfoInfos = processInfoMapper.selectList(wrapper);
+        if (processInfoInfos != null && processInfoInfos.size() > 0)
+            return processInfoInfos;
+        return null;
+
+    }
+    public ProcessInfo selectProcessInfoById(String id) {
+        System.out.println("tProcessorId="+id);
+        QueryWrapper<ProcessInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id);
+        List<ProcessInfo> processInfoInfos = processInfoMapper.selectList(wrapper);
+        if (processInfoInfos != null && processInfoInfos.size() > 0)
+            return processInfoInfos.get(0);
+        return null;
+    }
+    public int updateProcessInfoById(ProcessInfo processInfo) {
+        System.out.println("tProcessorId="+processInfo.toString());
+        int i = processInfoMapper.updateById(processInfo);
+        return i;
+
+    }
     public int insert(ProcessInfo processInfo) {
         int insert = processInfoMapper.insert(processInfo);
         return insert;

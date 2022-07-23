@@ -18,6 +18,8 @@ public class User {
 
     private String role;
 
+    private String phoneNo;
+
     private String realName;
 
     private String department;
@@ -25,6 +27,8 @@ public class User {
     private Date createTime;
 
     private Date updateTime;
+
+    private String status;
 
 
 }
