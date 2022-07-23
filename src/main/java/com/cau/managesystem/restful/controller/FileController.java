@@ -70,8 +70,8 @@ public class FileController {
     public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
         String fileName = request.getParameter("filename");
         System.out.println(fileName);
-        String month ="202201"
-        createClueCollectionXLS(month);
+        String month ="202201";
+        //createClueCollectionXLS(month);
 
         //if (StringUtils.hasText(fileName)) {
             //设置文件路径
