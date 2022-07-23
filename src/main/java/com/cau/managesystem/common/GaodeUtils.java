@@ -24,7 +24,7 @@ public class GaodeUtils {
         headers.put("Authorization", "APPCODE ");
         Map<String, String> querys = new HashMap<>();
         querys.put("keywords",keyWord);
-        querys.put("subdistrict","2");
+        querys.put("subdistrict","1");
         querys.put("key","78cc8b39557cb35653932242c44ee7ba");
         HttpResponse httpResponse = null;
         try{
@@ -40,7 +40,7 @@ public class GaodeUtils {
             System.out.println("convert Gaode response Exception!!!!!");
         }
 
-        JSONObject jsonObject = JSON.parseObject(res);
+
         GaodeRes gaodeRes = JSONObject.parseObject(res, GaodeRes.class);
 
         List<District> districts = gaodeRes.getDistricts().get(0).getDistricts();

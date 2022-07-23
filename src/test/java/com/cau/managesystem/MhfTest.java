@@ -36,6 +36,7 @@ public class MhfTest {
     @Test
     void MhfTest2() throws IOException {
 
-
+        List<District> strings = GaodeUtils.queryDistricts("海淀区");
+        System.out.println(strings);
     }
 }

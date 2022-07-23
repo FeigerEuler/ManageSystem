@@ -16,7 +16,11 @@ public class UserDto {
 
 
     public List<User> selectAll() {
-        List<User> userInfos = userMapper.selectList(null);
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+
+        wrapper.eq("status","1");
+        List<User> userInfos = userMapper.selectList(wrapper);
+
         return userInfos;
     }
 
@@ -24,6 +28,7 @@ public class UserDto {
     public User selectUserByUserName(String userName) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("user_name",userName);
+        wrapper.eq("status","1");
         List<User> userInfos = userMapper.selectList(wrapper);
         if(userInfos != null&&userInfos.size()>0)
             return userInfos.get(0);
@@ -34,6 +39,7 @@ public class UserDto {
     public User selectUserByUserId(String userId) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("id",userId);
+        wrapper.eq("status","1");
         List<User> userInfos = userMapper.selectList(wrapper);
         if(userInfos != null&&userInfos.size()>0)
             return userInfos.get(0);
@@ -42,6 +48,7 @@ public class UserDto {
     public List<User> selectUserByDepartment(String department) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("department",department);
+        wrapper.eq("status","1");
         List<User> userInfos = userMapper.selectList(wrapper);
         if(userInfos != null&&userInfos.size()>0)
             return userInfos;
@@ -51,14 +58,20 @@ public class UserDto {
     public User selectUserById(String id) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("id",id);
+        wrapper.eq("status","1");
         List<User> userInfos = userMapper.selectList(wrapper);
         if(userInfos != null&&userInfos.size()>0)
             return userInfos.get(0);
         return null;
 
     }
+    public int update(User user) {
+        int insert = userMapper.updateById(user);
+        return insert;
+    }
     public int insert(User user) {
         int insert = userMapper.insert(user);
         return insert;
     }
+    
 }

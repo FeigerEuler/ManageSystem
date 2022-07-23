@@ -12,9 +12,14 @@ import com.cau.managesystem.responses.QueryProcessInfoResponse;
 import com.cau.managesystem.responses.TaskAssignResponse;
 import com.cau.managesystem.smsService.SmsNotify;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -298,6 +303,7 @@ public class ApiController {
     }
 
 
+
     @PostMapping("/getToDoList")
     @ResponseBody
     public QueryProcessInfoResponse getToDoList(@RequestBody String body) {
@@ -340,7 +346,67 @@ public class ApiController {
         return rep;
     }
 
+    /**
+     * 文件下载
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/download")
+    public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
+        //String fileName = request.getParameter("filename");
+        //System.out.println(fileName);
+       // if (StringUtils.hasText(fileName)) {
+            //设置文件路径
+            File file = new File("/Users/admin-mhf/IdeaProjects/ManageSystem/mhf.txt");
+            if (file.exists()) {
+                response.setContentType("application/force-download");// 设置强制下载不打开
+                response.addHeader("Content-Disposition", "attachment;fileName=" + "fileName.txt");// 设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    bis = new BufferedInputStream(fis);
+                    OutputStream os = response.getOutputStream();
+                   // int i = bis.read(buffer);
 
+                   // while (i != -1) {
+                        buffer = "01234567890123456789".getBytes(StandardCharsets.UTF_8);
+                        System.out.println(buffer.length);
+                    System.out.println(">>>>>>>>>>>>");
+                        for(int j=0;j<buffer.length;j++){
+                            System.out.println(buffer[j]);
+                            os.write(buffer[j]);
+                        }
+
+                    //    i = bis.read(buffer);
+                   //}
+                    return "下载成功";
+                } catch (Exception e) {
+
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                } finally { // 做关闭操作
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            //    }
+            }
+        }
+        return "下载失败";
+    }
     @GetMapping("/test")
     public String helloWeb1() {
         return "helloworld";
