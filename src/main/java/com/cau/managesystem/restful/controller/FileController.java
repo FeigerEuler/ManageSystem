@@ -1,0 +1,170 @@
+package com.cau.managesystem.restful.controller;
+
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.cau.managesystem.common.GaodeUtils;
+import com.cau.managesystem.database.service.dto.*;
+import com.cau.managesystem.entity.*;
+import com.cau.managesystem.responses.AddProcessInfoResponse;
+import com.cau.managesystem.responses.QueryDistrictsResponse;
+import com.cau.managesystem.responses.QueryProcessInfoResponse;
+import com.cau.managesystem.responses.TaskAssignResponse;
+import com.cau.managesystem.smsService.SmsNotify;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+
+@RestController()
+@RequestMapping("download")
+public class FileController {
+
+    @Autowired
+    private ExtenerDto extenerDto;
+    @Autowired
+    private ClueCollectionDto clueCollectionDto;
+
+    @Autowired
+    private ProcessInfoDto processInfoDto;
+    @Autowired
+    private ConsultantDto consultantDto;
+
+    @Autowired
+    private TechnicianDto technicianDto;
+    @Autowired
+    private ComponentDto componentDto;
+    @Autowired
+    private TreasurerDto treasurerDto;
+    @Autowired
+    private ManagerDto managerDto;
+
+
+
+    @Autowired
+    private UserDto userDto;
+
+    @Autowired
+    private SmsNotify smsNotify;
+
+    //时间格式化对象
+    private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+
+    /**
+     * 文件下载
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/download")
+    public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
+        String fileName = request.getParameter("filename");
+        System.out.println(fileName);
+        String month ="202201"
+        createClueCollectionXLS(month);
+
+        //if (StringUtils.hasText(fileName)) {
+            //设置文件路径
+            File file = new File("/Users/admin-mhf/IdeaProjects/ManageSystem/mhf.txt");
+            if (file.exists()) {
+                response.setContentType("application/force-download");// 设置强制下载不打开
+                response.addHeader("Content-Disposition", "attachment;fileName=" + "fileName.txt");// 设置文件名
+                byte[] buffer = new byte[1024];
+                FileInputStream fis = null;
+                BufferedInputStream bis = null;
+                try {
+                    fis = new FileInputStream(file);
+                    bis = new BufferedInputStream(fis);
+                    OutputStream os = response.getOutputStream();
+                   // int i = bis.read(buffer);
+
+                   // while (i != -1) {
+                        buffer = "01234567890123456789".getBytes(StandardCharsets.UTF_8);
+                        System.out.println(buffer.length);
+                    System.out.println(">>>>>>>>>>>>");
+                        for(int j=0;j<buffer.length;j++){
+                            System.out.println(buffer[j]);
+                            os.write(buffer[j]);
+                        }
+
+                    //    i = bis.read(buffer);
+                   //}
+                    return "下载成功";
+                } catch (Exception e) {
+
+                    System.out.println(e.getMessage());
+                    e.printStackTrace();
+                } finally { // 做关闭操作
+                    if (bis != null) {
+                        try {
+                            bis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            //    }
+            }
+        }
+        return "下载失败";
+    }
+
+    private String  createClueCollectionXLS(String startDate,String endDate) {
+        String path = "/root";
+        List<ClueCollection> clueCollections = clueCollectionDto.selectRecordsByDate(startDate, endDate);
+        List<List<String>> list = new ArrayList<>();
+        List<String> head0 = new ArrayList<>();
+        head0.add("单号");
+        List<String> head1 = new ArrayList<>();
+        head1.add("线索获取途径");
+        List<String> head2 = new ArrayList<>();
+        head2.add("客户报案时间");
+        List<String> head3= new ArrayList<>();
+        head0.add("客户报案区域");
+        List<String> head4 = new ArrayList<>();
+        head1.add("线索获取时间");
+        List<String> head5 = new ArrayList<>();
+        head2.add("是否有效线索");
+
+        List<String> head6 = new ArrayList<>();
+        head0.add("是否自店保险");
+        List<String> head7 = new ArrayList<>();
+        head1.add("是否自店维修客户");
+        List<String> head8 = new ArrayList<>();
+        head2.add("线索分配时间");
+        List<String> head9= new ArrayList<>();
+        head0.add("线索跟进人（外拓）");
+        List<String> head10 = new ArrayList<>();
+        head1.add("首次联系客户时间");
+        List<String> head11 = new ArrayList<>();
+        head2.add("是否到达现场");
+        list.add(head0);
+        list.add(head0);
+        list.add(head1);
+        list.add(head2);
+
+
+        return path;
+    }
+
+    @GetMapping("/test")
+    public String helloWeb1() {
+        return "helloworld";
+    }
+}
