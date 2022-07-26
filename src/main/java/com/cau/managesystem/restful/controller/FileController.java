@@ -152,6 +152,46 @@ public class FileController {
             data.add(clueCollection.getInfoSource());
             data.add(clueCollection.getClientReportTime());
             data.add(clueCollection.getReportRegion());
+            data.add(clueCollection.getAcquire_time());
+            data.add(clueCollection.getClueValid());
+            data.add(clueCollection.getIsSubscriber());
+            data.add(consultant.getIsSubscriber());
+            data.add(clueCollection.getCreateTime());
+            //head9.add("线索跟进人（外拓）");
+            data.add(extener.getFirstContactTime());
+            data.add(extener.getIsOnSite());
+
+
+            //head12.add("到达现场时间");
+
+            //head13.add("是否首个到达现场");
+            data.add(extener.getHaveCarArrived());
+
+
+            //head15.add("车辆到店时间");
+            data.add(consultant.getIsRepire());
+
+           data.add(consultant.getIsTotalLoss());
+
+
+            //head18.add("车辆完工时间");
+            data.add(treasurer.getDeliverTime());
+
+            data.add(consultant.getOutputValue());
+
+            data.add(extener.getMarketingFee());
+
+            data.add(componenter.getComponentCost());
+
+
+            //head23.add("毛利率");
+            data.add(consultant.getIsViscousProduct());
+
+
+            //head25.add("是否二次进店（非返修）");
+
+            //head26.add("外维修地方（找保险公司获取）");
+
 
 
 
