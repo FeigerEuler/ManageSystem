@@ -37,6 +37,18 @@ public class ClueCollectionDto {
 
     }
 
+
+    public ClueCollection selectClueCollectionById(String id) {
+        QueryWrapper<ClueCollection> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id);
+        List<ClueCollection> clueCollectionInfos = clueCollectionMapper.selectList(wrapper);
+        if (clueCollectionInfos != null && clueCollectionInfos.size() > 0)
+            return clueCollectionInfos.get(0);
+        return null;
+
+    }
+
+
     public int insert(ClueCollection ClueCollection) {
         int insert = clueCollectionMapper.insert(ClueCollection);
         return insert;

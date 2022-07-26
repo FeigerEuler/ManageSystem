@@ -2,6 +2,7 @@ package com.cau.managesystem.database.service.dto;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cau.managesystem.database.service.mapper.TreasurerMapper;
+import com.cau.managesystem.entity.Technician;
 import com.cau.managesystem.entity.Treasurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,13 @@ public class TreasurerDto {
         List<Treasurer> Treasurers = treasurerMapper.selectList(null);
         return Treasurers;
     }
-
+    public List<Treasurer> selectByDate(String start,String end) {
+        QueryWrapper<Treasurer> wrapper = new QueryWrapper<>();
+        wrapper.ge("id",start);
+        wrapper.le("id", end);
+        List<Treasurer> Treasurers = treasurerMapper.selectList(wrapper);
+        return Treasurers;
+    }
 
     public Treasurer selectTreasurerById(String id) {
         QueryWrapper<Treasurer> wrapper = new QueryWrapper<>();

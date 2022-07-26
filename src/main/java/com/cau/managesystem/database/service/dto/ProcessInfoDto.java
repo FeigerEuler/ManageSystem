@@ -3,6 +3,7 @@ package com.cau.managesystem.database.service.dto;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cau.managesystem.entity.ProcessInfo;
 import com.cau.managesystem.database.service.mapper.ProcessInfoMapper;
+import com.cau.managesystem.entity.Technician;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,15 @@ public class ProcessInfoDto {
 
 
     public List<ProcessInfo> selectAll() {
+        List<ProcessInfo> ProcessInfos = processInfoMapper.selectList(null);
+        return ProcessInfos;
+    }
+
+    public List<ProcessInfo> selectByDate(String start,String end) {
+        QueryWrapper<Technician> wrapper = new QueryWrapper<>();
+        wrapper.ge("id",start);
+        wrapper.le("id", end);
+        wrapper.eq("status", "done");
         List<ProcessInfo> ProcessInfos = processInfoMapper.selectList(null);
         return ProcessInfos;
     }

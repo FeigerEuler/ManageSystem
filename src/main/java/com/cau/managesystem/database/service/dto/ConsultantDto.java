@@ -2,6 +2,7 @@ package com.cau.managesystem.database.service.dto;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cau.managesystem.database.service.mapper.ConsultantMapper;
+import com.cau.managesystem.entity.Componenter;
 import com.cau.managesystem.entity.Consultant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,14 @@ public class ConsultantDto {
 
     public List<Consultant> selectAll() {
         List<Consultant> Consultants = consultantMapper.selectList(null);
+        return Consultants;
+    }
+
+    public List<Consultant> selectByDate(String start,String end) {
+        QueryWrapper<Consultant> wrapper = new QueryWrapper<>();
+        wrapper.ge("id",start);
+        wrapper.le("id", end);
+        List<Consultant> Consultants = consultantMapper.selectList(wrapper);
         return Consultants;
     }
 

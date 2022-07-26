@@ -49,7 +49,6 @@ public class FileController {
     private ManagerDto managerDto;
 
 
-
     @Autowired
     private UserDto userDto;
 
@@ -62,6 +61,7 @@ public class FileController {
 
     /**
      * 文件下载
+     *
      * @param request
      * @param response
      * @return
@@ -70,74 +70,96 @@ public class FileController {
     public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
         String fileName = request.getParameter("filename");
         System.out.println(fileName);
-        String month ="202201";
+        String month = "202201";
         //createClueCollectionXLS(month);
 
         //if (StringUtils.hasText(fileName)) {
-            //设置文件路径
-            File file = new File("/Users/admin-mhf/IdeaProjects/ManageSystem/mhf.txt");
-            if (file.exists()) {
-                response.setContentType("application/force-download");// 设置强制下载不打开
-                response.addHeader("Content-Disposition", "attachment;fileName=" + "fileName.txt");// 设置文件名
-                byte[] buffer = new byte[1024];
-                FileInputStream fis = null;
-                BufferedInputStream bis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    bis = new BufferedInputStream(fis);
-                    OutputStream os = response.getOutputStream();
-                   // int i = bis.read(buffer);
+        //设置文件路径
+        File file = new File("/Users/admin-mhf/IdeaProjects/ManageSystem/mhf.txt");
+        if (file.exists()) {
+            response.setContentType("application/force-download");// 设置强制下载不打开
+            response.addHeader("Content-Disposition", "attachment;fileName=" + "fileName.txt");// 设置文件名
+            byte[] buffer = new byte[1024];
+            FileInputStream fis = null;
+            BufferedInputStream bis = null;
+            try {
+                fis = new FileInputStream(file);
+                bis = new BufferedInputStream(fis);
+                OutputStream os = response.getOutputStream();
+                // int i = bis.read(buffer);
 
-                   // while (i != -1) {
-                        buffer = "01234567890123456789".getBytes(StandardCharsets.UTF_8);
-                        System.out.println(buffer.length);
-                    System.out.println(">>>>>>>>>>>>");
-                        for(int j=0;j<buffer.length;j++){
-                            System.out.println(buffer[j]);
-                            os.write(buffer[j]);
-                        }
+                // while (i != -1) {
+                buffer = "01234567890123456789".getBytes(StandardCharsets.UTF_8);
+                System.out.println(buffer.length);
+                System.out.println(">>>>>>>>>>>>");
+                for (int j = 0; j < buffer.length; j++) {
+                    System.out.println(buffer[j]);
+                    os.write(buffer[j]);
+                }
 
-                    //    i = bis.read(buffer);
-                   //}
-                    return "下载成功";
-                } catch (Exception e) {
+                //    i = bis.read(buffer);
+                //}
+                return "下载成功";
+            } catch (Exception e) {
 
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-                } finally { // 做关闭操作
-                    if (bis != null) {
-                        try {
-                            bis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            } finally { // 做关闭操作
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                }
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-            //    }
+                }
+                //    }
             }
         }
         return "下载失败";
     }
 
-    private String  createClueCollectionXLS(String startDate,String endDate) {
+    private String createClueCollectionXLS(String startDate, String endDate) {
 
-        List<List<String>> heads =  buildheads();
-        List<List<Object>> data = buildData(startDate,endDate);
+        List<List<String>> heads = buildheads();
+        List<List<Object>> data = buildData(startDate, endDate);
 
 
         return "./test.xls";
     }
 
     private List<List<Object>> buildData(String startDate, String endDate) {
+        List<List<Object>> list = new ArrayList<>();
         String path = "./test.xls";
-        List<ClueCollection> clueCollections = clueCollectionDto.selectRecordsByDate(startDate, endDate);
+        List<ProcessInfo> processInfos = processInfoDto.selectByDate(startDate, endDate);
+        for (ProcessInfo p : processInfos) {
+            String id = p.getId();
+            ClueCollection clueCollection = clueCollectionDto.selectClueCollectionById(id);
+            Componenter componenter = componentDto.selectComponentById(id);
+            Consultant consultant = consultantDto.selectConsultantById(id);
+            Extener extener = extenerDto.selectExtenerById(id);
+            Technician technician = technicianDto.selectTechnicianById(id);
+            Treasurer treasurer = treasurerDto.selectTreasurerById(id);
 
+            List<Object> data = new ArrayList<>();
+            data.add(id);
+            data.add(clueCollection.getInfoSource());
+            data.add(clueCollection.getClientReportTime());
+            data.add(clueCollection.getReportRegion());
+
+
+
+
+
+list.add(data);
+        }
+        return list;
     }
 
     private List<List<String>> buildheads() {
@@ -148,7 +170,7 @@ public class FileController {
         head1.add("线索获取途径");
         List<String> head2 = new ArrayList<>();
         head2.add("客户报案时间");
-        List<String> head3= new ArrayList<>();
+        List<String> head3 = new ArrayList<>();
         head3.add("客户报案区域");
         List<String> head4 = new ArrayList<>();
         head4.add("线索获取时间");
@@ -161,7 +183,7 @@ public class FileController {
         head7.add("是否自店维修客户");
         List<String> head8 = new ArrayList<>();
         head8.add("线索分配时间");
-        List<String> head9= new ArrayList<>();
+        List<String> head9 = new ArrayList<>();
         head9.add("线索跟进人（外拓）");
         List<String> head10 = new ArrayList<>();
         head10.add("首次联系客户时间");
@@ -226,7 +248,7 @@ public class FileController {
         list.add(head25);
         list.add(head26);
 
-return list;
+        return list;
     }
 
     @GetMapping("/test")
