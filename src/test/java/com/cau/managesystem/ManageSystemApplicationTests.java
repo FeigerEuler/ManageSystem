@@ -5,6 +5,7 @@ import com.cau.managesystem.entity.User;
 
 import com.cau.managesystem.database.service.dto.ExtenerDto;
 import com.cau.managesystem.database.service.dto.UserDto;
+import com.cau.managesystem.restful.controller.FileController;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 
@@ -23,7 +25,8 @@ class ManageSystemApplicationTests {
     private UserDto userDto;
     @Autowired
     private ExtenerDto extenerDto;
-
+    @Autowired
+    private FileController fileController;
     @Test
     void contextLoads() {
         System.out.println("hello world myq");
@@ -52,6 +55,13 @@ class ManageSystemApplicationTests {
 
         System.out.println("已插入："+extenerDto.insert(extener));
 
+
+    }
+
+    @Test
+    void Mhf3Test() throws IOException {
+
+        fileController.createClueCollectionXLS("2022","2023");
 
     }
 }

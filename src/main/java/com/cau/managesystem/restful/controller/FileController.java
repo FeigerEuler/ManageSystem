@@ -1,6 +1,7 @@
 package com.cau.managesystem.restful.controller;
 
 
+import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cau.managesystem.common.GaodeUtils;
@@ -12,9 +13,11 @@ import com.cau.managesystem.responses.QueryProcessInfoResponse;
 import com.cau.managesystem.responses.TaskAssignResponse;
 import com.cau.managesystem.smsService.SmsNotify;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resources;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -27,6 +30,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping("download")
+@Repository
 public class FileController {
 
     @Autowired
@@ -125,27 +129,45 @@ public class FileController {
         return "下载失败";
     }
 
-    private String createClueCollectionXLS(String startDate, String endDate) {
+    public String createClueCollectionXLS(String startDate, String endDate) {
 
         List<List<String>> heads = buildheads();
         List<List<Object>> data = buildData(startDate, endDate);
-
-
+        String fileName = "./test.xls";
+        EasyExcel.write(fileName).head(heads).sheet("模板").doWrite(data);
         return "./test.xls";
     }
 
     private List<List<Object>> buildData(String startDate, String endDate) {
         List<List<Object>> list = new ArrayList<>();
-        String path = "./test.xls";
+
         List<ProcessInfo> processInfos = processInfoDto.selectByDate(startDate, endDate);
         for (ProcessInfo p : processInfos) {
             String id = p.getId();
             ClueCollection clueCollection = clueCollectionDto.selectClueCollectionById(id);
+            if(clueCollection==null){
+                clueCollection = new ClueCollection();
+            }
             Componenter componenter = componentDto.selectComponentById(id);
+            if(null==componenter){
+                componenter = new Componenter();
+            }
             Consultant consultant = consultantDto.selectConsultantById(id);
+            if(consultant==null){
+                consultant = new Consultant();
+            }
             Extener extener = extenerDto.selectExtenerById(id);
+            if(extener == null){
+                extener = new Extener();
+            }
             Technician technician = technicianDto.selectTechnicianById(id);
+            if(technician == null){
+                technician = new Technician();
+            }
             Treasurer treasurer = treasurerDto.selectTreasurerById(id);
+            if(treasurer==null){
+                treasurer = new Treasurer();
+            }
 
             List<Object> data = new ArrayList<>();
             data.add(id);
@@ -157,45 +179,34 @@ public class FileController {
             data.add(clueCollection.getIsSubscriber());
             data.add(consultant.getIsSubscriber());
             data.add(clueCollection.getCreateTime());
-            //head9.add("线索跟进人（外拓）");
+            data.add("线索跟进人（外拓）");
             data.add(extener.getFirstContactTime());
             data.add(extener.getIsOnSite());
 
+            data.add("到达现场时间");
 
-            //head12.add("到达现场时间");
-
-            //head13.add("是否首个到达现场");
+            data.add("是否首个到达现场");
             data.add(extener.getHaveCarArrived());
-
-
-            //head15.add("车辆到店时间");
+data.add("车辆到店时间");
             data.add(consultant.getIsRepire());
 
            data.add(consultant.getIsTotalLoss());
 
 
-            //head18.add("车辆完工时间");
+            data.add("车辆完工时间");
             data.add(treasurer.getDeliverTime());
 
             data.add(consultant.getOutputValue());
 
             data.add(extener.getMarketingFee());
-
             data.add(componenter.getComponentCost());
 
-
-            //head23.add("毛利率");
+            data.add("毛利率");
             data.add(consultant.getIsViscousProduct());
 
+            data.add("是否二次进店（非返修）");
 
-            //head25.add("是否二次进店（非返修）");
-
-            //head26.add("外维修地方（找保险公司获取）");
-
-
-
-
-
+            data.add("外维修地方（找保险公司获取）");
 
 list.add(data);
         }
