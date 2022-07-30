@@ -7,10 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cau.managesystem.common.GaodeUtils;
 import com.cau.managesystem.database.service.dto.*;
 import com.cau.managesystem.entity.*;
-import com.cau.managesystem.responses.AddProcessInfoResponse;
-import com.cau.managesystem.responses.QueryDistrictsResponse;
-import com.cau.managesystem.responses.QueryProcessInfoResponse;
-import com.cau.managesystem.responses.TaskAssignResponse;
+import com.cau.managesystem.responses.*;
 import com.cau.managesystem.smsService.SmsNotify;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -66,23 +63,22 @@ public class FileController {
     /**
      * 文件下载
      *
-     * @param request
+     * @param
      * @param response
      * @return
      */
-    @GetMapping("/download")
-    public String downloadFile(HttpServletRequest request, HttpServletResponse response) {
-        String fileName = request.getParameter("filename");
-        System.out.println(fileName);
-        String month = "202201";
-        //createClueCollectionXLS(month);
 
-        //if (StringUtils.hasText(fileName)) {
+    @GetMapping("/data")
+    public CommonResponse downloadFile(String startDate,String endDate,HttpServletRequest request,  HttpServletResponse response) {
+        System.out.println("收到导出报表请求，开始日期="+startDate+",截止日期="+endDate);
+        String fileName = createClueCollectionXLS(startDate,endDate);
+        CommonResponse resp = new CommonResponse();
+       //String fileName = "test.xls";
         //设置文件路径
-        File file = new File("/Users/admin-mhf/IdeaProjects/ManageSystem/mhf.txt");
+        File file = new File(fileName);
         if (file.exists()) {
             response.setContentType("application/force-download");// 设置强制下载不打开
-            response.addHeader("Content-Disposition", "attachment;fileName=" + "fileName.txt");// 设置文件名
+            response.addHeader("Content-Disposition", "attachment;fileName=" + fileName);// 设置文件名
             byte[] buffer = new byte[1024];
             FileInputStream fis = null;
             BufferedInputStream bis = null;
@@ -90,20 +86,16 @@ public class FileController {
                 fis = new FileInputStream(file);
                 bis = new BufferedInputStream(fis);
                 OutputStream os = response.getOutputStream();
-                // int i = bis.read(buffer);
-
-                // while (i != -1) {
-                buffer = "01234567890123456789".getBytes(StandardCharsets.UTF_8);
-                System.out.println(buffer.length);
-                System.out.println(">>>>>>>>>>>>");
-                for (int j = 0; j < buffer.length; j++) {
-                    System.out.println(buffer[j]);
-                    os.write(buffer[j]);
+                int i = bis.read(buffer);
+                while (i != -1) {
+                    os.write(buffer);
+                    i = bis.read(buffer);
                 }
 
-                //    i = bis.read(buffer);
-                //}
-                return "下载成功";
+
+                resp.buildSuccess();
+                System.out.println(JSON.toJSONString(resp));
+                return resp;
             } catch (Exception e) {
 
                 System.out.println(e.getMessage());
@@ -126,16 +118,17 @@ public class FileController {
                 //    }
             }
         }
-        return "下载失败";
+        resp.buildFail("下载失败");
+        return resp;
     }
 
     public String createClueCollectionXLS(String startDate, String endDate) {
 
         List<List<String>> heads = buildheads();
         List<List<Object>> data = buildData(startDate, endDate);
-        String fileName = "./test.xls";
+        String fileName = startDate+"—"+endDate+".xls";
         EasyExcel.write(fileName).head(heads).sheet("模板").doWrite(data);
-        return "./test.xls";
+        return fileName;
     }
 
     private List<List<Object>> buildData(String startDate, String endDate) {
